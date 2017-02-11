@@ -36,7 +36,7 @@ Table 1: Error rates (%) on CIFAR-10
 0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch) and [optnet](https://github.com/fmassa/optimize-net).
 1. Download Shake-Shake
 ```
-git clone https://github.com/xgastaldi/shake-shake
+git clone https://github.com/xgastaldi/shake-shake.git
 ```
 2. Copy the elements in the shake-shake folder and paste them in the fb.resnet.torch folder. This will overwrite 5 files (*main.lua*, *train.lua*, *opts.lua*, *checkpoints.lua* and *models/init.lua*) and add 3 new files (*models/shakeshake.lua*, *models/shakeshakeblock.lua* and *models/mulconstantslices.lua*).
 3. You can train a 26 2x32d "Shake-Shake-Image" ResNet on CIFAR-10+ using
