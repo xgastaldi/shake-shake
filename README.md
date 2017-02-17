@@ -1,7 +1,6 @@
 #Shake-Shake regularization of 3-branch residual networks
 
-This repository contains the code for the paper "Shake-Shake regularization of 3-branch residual networks". 
-
+This repository contains the code for the paper [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl). 
 
 The code is based on [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch).
 
@@ -12,7 +11,7 @@ The code is based on [fb.resnet.torch] (https://github.com/facebook/fb.resnet.to
 0. [Contact](#contact)
 
 ##Introduction
-This method aims at helping Computer Vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.72% test error.
+This method aims at helping computer vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.72% test error.
 
 ![shake-shake](https://s3.eu-central-1.amazonaws.com/github-xg/architecture3.png)
 
@@ -23,7 +22,7 @@ The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 res
 
 Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x32d 
 -------|:-------:|:--------:|:--------:|:--------:|:--------:|
-Even	|Even	|Batch	|4.14	|3.63	|3.35
+Even	|Even	|Batch	|4.14	|3.63	|3.44
 Even	|Shake	|Batch	|4.29	|-	|-
 Shake	|Keep	|Batch	|4.02	|-	|-
 Shake	|Even	|Batch	|3.42	|3.23	|-
