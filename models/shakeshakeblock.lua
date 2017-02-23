@@ -145,7 +145,7 @@ function ShakeShakeBlock:updateGradInput(input, gradOutput)
      else -- If we do not want to randomize the backward pass
        -- Access the vector where constants are stored in in self.net1 nn.MulConstantSlices and overwrite it with 0.5s
        self.net1.modules[7].constant_tensor = torch.ones(self.batchSize)*0.5
-       -- Access the vector where constants are stored in in self.net1 nn.MulConstantSlices and overwrite it with 0.5s
+       -- Access the vector where constants are stored in in self.net2 nn.MulConstantSlices and overwrite it with 0.5s
        self.net2.modules[7].constant_tensor = torch.ones(self.batchSize)*0.5
      end
    else -- If we want to work at the batch level
