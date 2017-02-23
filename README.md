@@ -18,16 +18,16 @@ This method aims at helping computer vision practitioners faced with an overfit 
 Figure 1: **Left:** Forward training pass. **Center:** Backward training pass. **Right:** At test time.
 
 ##Results
-The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 2 runs except for the best model which was run 5 times.
+The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the best model which was run 5 times.
 
 Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x32d 
 -------|:-------:|:--------:|:--------:|:--------:|:--------:|
-Even	|Even	|Batch	|4.14	|3.63	|3.44
-Even	|Shake	|Batch	|4.29	|-	|-
-Shake	|Keep	|Batch	|4.02	|-	|-
-Shake	|Even	|Batch	|3.42	|3.23	|-
-Shake	|Shake	|Batch	|3.60	|2.99	|-
-Shake	|Shake	|Image 	|3.46	|2.82	|**2.72**
+Even	|Even	|Batch	|4.13	|3.64	|3.44
+Even	|Shake	|Batch	|4.34	|-	|-
+Shake	|Keep	|Batch	|3.98	|-	|-
+Shake	|Even	|Batch	|3.40	|3.24	|-
+Shake	|Shake	|Batch	|3.54	|3.01	|-
+Shake	|Shake	|Image 	|3.48	|2.86	|**2.72**
 
 Table 1: Error rates (%) on CIFAR-10
 
