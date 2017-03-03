@@ -18,21 +18,24 @@ This method aims at helping computer vision practitioners faced with an overfit 
 Figure 1: **Left:** Forward training pass. **Center:** Backward training pass. **Right:** At test time.
 
 ##Results
-The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the best model which was run 5 times.
+The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the 96d models which were run 5 times.
 
 Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x96d 
 -------|:-------:|:--------:|:--------:|:--------:|:--------:|
-Even	|Even	|Batch	|4.13	|3.64	|3.44
+Even	|Even	|n\a	|4.13	|3.64	|3.44
 Even	|Shake	|Batch	|4.34	|-	|-
 Shake	|Keep	|Batch	|3.98	|-	|-
 Shake	|Even	|Batch	|3.40	|3.24	|-
 Shake	|Shake	|Batch	|3.54	|3.01	|-
+Even	|Shake	|Image	|tbd	|-	|-
+Shake	|Keep	|Image	|4.07	|-	|-
+Shake	|Even	|Image	|tbd	|tbd	|-
 Shake	|Shake	|Image 	|3.48	|2.86	|**2.72**
 
 Table 1: Error rates (%) on CIFAR-10
 
 ##Usage 
-0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch) and [optnet](https://github.com/fmassa/optimize-net).
+0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
 1. Download Shake-Shake
 ```
 git clone https://github.com/xgastaldi/shake-shake.git
@@ -66,9 +69,9 @@ Ln 88-89: Adds the learning rate to the elements printed on screen
 Ln 57-62: Adds Shake-Shake options  
 
 *checkpoints.lua*  
-Ln 15: Adds require 'models/shakeshakeblock'  
-Ln 59-60: Avoids using deepcopy (it doesn't seem to be compatible with the BN in shakeshakeblock)  
-Ln 66-81: Saves only the best model  
+Ln 15-16: Adds require 'models/shakeshakeblock' and require 'std'  
+Ln 60-61: Avoids using the fb.renet.torch deepcopy (it doesn't seem to be compatible with the BN in shakeshakeblock) and replaces it with the deepcopy from stdlib  
+Ln 67-81: Saves only the best model  
 
 *init.lua*  
 Ln 91-92: Adds require 'models/mulconstantslices' and require 'models/shakeshakeblock'  

@@ -13,6 +13,7 @@ local checkpoint = {}
 
 ------Shake-Shake------
 require 'models/shakeshakeblock'
+local std = require 'std'
 ------Shake-Shake------
 
 local function deepCopy(tbl)
@@ -57,7 +58,7 @@ function checkpoint.save(epoch, model, optimState, isBestModel, opt)
    -- create a clean copy on the CPU without modifying the original network
    ------Shake-Shake------
    --model = deepCopy(model):float():clearState()
-   model = model:clone():clearState()
+   model = std.tree.clone(model):float():clearState()
    ------Shake-Shake------
 
    local modelFile = 'model_' .. epoch .. '.t7'
