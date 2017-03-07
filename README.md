@@ -27,9 +27,9 @@ Even	|Shake	|Batch	|4.34	|-	|-
 Shake	|Keep	|Batch	|3.98	|-	|-
 Shake	|Even	|Batch	|3.40	|3.24	|-
 Shake	|Shake	|Batch	|3.54	|3.01	|-
-Even	|Shake	|Image	|tbd	|-	|-
+Even	|Shake	|Image	|3.89	|-	|-
 Shake	|Keep	|Image	|4.07	|-	|-
-Shake	|Even	|Image	|tbd	|tbd	|-
+Shake	|Even	|Image	|3.35	|3.11	|-
 Shake	|Shake	|Image 	|3.48	|2.86	|**2.72**
 
 Table 1: Error rates (%) on CIFAR-10
