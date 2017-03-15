@@ -2,7 +2,7 @@
 
 This repository contains the code for the paper [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl). 
 
-The code is based on [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch).
+The code is based on [fb.resnet.torch](https://github.com/facebook/fb.resnet.torch).
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -35,7 +35,7 @@ Shake	|Shake	|Image 	|3.55	|2.98	|**2.86**
 Table 1: Error rates (%) on CIFAR-10 (Top 1 of the last epoch)
 
 ## Usage 
-0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
+0. Install [fb.resnet.torch](https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
 1. Download Shake-Shake
 ```
 git clone https://github.com/xgastaldi/shake-shake.git
