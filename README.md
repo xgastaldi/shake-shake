@@ -11,7 +11,7 @@ The code is based on [fb.resnet.torch] (https://github.com/facebook/fb.resnet.to
 0. [Contact](#contact)
 
 ##Introduction
-This method aims at helping computer vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.72% test error.
+This method aims at helping computer vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.86% test error.
 
 ![shake-shake](https://s3.eu-central-1.amazonaws.com/github-xg/architecture3.png)
 
@@ -22,17 +22,17 @@ The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 res
 
 Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x96d 
 -------|:-------:|:--------:|:--------:|:--------:|:--------:|
-Even	|Even	|n\a	|4.13	|3.64	|3.44
-Even	|Shake	|Batch	|4.34	|-	|-
-Shake	|Keep	|Batch	|3.98	|-	|-
-Shake	|Even	|Batch	|3.40	|3.24	|-
-Shake	|Shake	|Batch	|3.54	|3.01	|-
-Even	|Shake	|Image	|3.89	|-	|-
-Shake	|Keep	|Image	|4.07	|-	|-
-Shake	|Even	|Image	|3.35	|3.11	|-
-Shake	|Shake	|Image 	|3.48	|2.86	|**2.72**
+Even	|Even	|n\a	|4.27	|3.76	|3.58
+Even	|Shake	|Batch	|4.44	|-	|-
+Shake	|Keep	|Batch	|4.11	|-	|-
+Shake	|Even	|Batch	|3.47	|3.30	|-
+Shake	|Shake	|Batch	|3.67	|3.07	|-
+Even	|Shake	|Image	|4.11	|-	|-
+Shake	|Keep	|Image	|4.09	|-	|-
+Shake	|Even	|Image	|3.47	|3.20	|-
+Shake	|Shake	|Image 	|3.55	|2.98	|**2.86**
 
-Table 1: Error rates (%) on CIFAR-10
+Table 1: Average error rates of the last epochs (%) on CIFAR-10
 
 ##Usage 
 0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
