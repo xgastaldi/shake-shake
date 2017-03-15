@@ -1,23 +1,23 @@
-#Shake-Shake regularization of 3-branch residual networks
+# Shake-Shake regularization of 3-branch residual networks
 
 This repository contains the code for the paper [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl). 
 
 The code is based on [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch).
 
-##Table of Contents
-0. [Introduction](#introduction)
-0. [Results](#results)
-0. [Usage](#usage)
-0. [Contact](#contact)
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Results](#results)
+3. [Usage](#usage)
+4. [Contact](#contact)
 
-##Introduction
+## Introduction
 This method aims at helping computer vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.86% test error.
 
 ![shake-shake](https://s3.eu-central-1.amazonaws.com/github-xg/architecture3.png)
 
 Figure 1: **Left:** Forward training pass. **Center:** Backward training pass. **Right:** At test time.
 
-##Results
+## Results
 The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the 96d models which were run 5 times.
 
 Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x96d 
@@ -34,7 +34,7 @@ Shake	|Shake	|Image 	|3.55	|2.98	|**2.86**
 
 Table 1: Average error rates of the last epochs (%) on CIFAR-10
 
-##Usage 
+## Usage 
 0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
 1. Download Shake-Shake
 ```
@@ -55,7 +55,7 @@ CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -de
 
 A widenFactor of 2 corresponds to 32d, 4 to 64d, etc..
 
-###Note
+### Note
 Changes made to fb.resnet.torch files:
 
 *main.lua*  
@@ -78,7 +78,7 @@ Ln 91-92: Adds require 'models/mulconstantslices' and require 'models/shakeshake
 
 The main model is in *shakeshake.lua*. The residual block model is in *shakeshakeblock.lua*. *mulconstantslices.lua* is just an extension of nn.mulconstant that multiplies elements of a vector with image slices of a mini-batch tensor.
 
-##Contact
+## Contact
 xgastaldi.mba2011 at london.edu  
 Any discussions, suggestions and questions are welcome!
 
