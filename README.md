@@ -32,7 +32,7 @@ Shake	|Keep	|Image	|4.09	|-	|-
 Shake	|Even	|Image	|3.47	|3.20	|-
 Shake	|Shake	|Image 	|3.55	|2.98	|**2.86**
 
-Table 1: Average error rates of the last epochs (%) on CIFAR-10
+Table 1: Error rates (%) on CIFAR-10 (Top 1 of the last epoch)
 
 ## Usage 
 0. Install [fb.resnet.torch] (https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
