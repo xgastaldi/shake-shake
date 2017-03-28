@@ -41,13 +41,17 @@ Table 1: Error rates (%) on CIFAR-10 (Top 1 of the last epoch)
 git clone https://github.com/xgastaldi/shake-shake.git
 ```
 2. Copy the elements in the shake-shake folder and paste them in the fb.resnet.torch folder. This will overwrite 5 files (*main.lua*, *train.lua*, *opts.lua*, *checkpoints.lua* and *models/init.lua*) and add 3 new files (*models/shakeshake.lua*, *models/shakeshakeblock.lua* and *models/mulconstantslices.lua*).
-3. You can train a 26 2x32d "Shake-Shake-Image" ResNet on CIFAR-10+ using
+3. To reproduce CIFAR-10 results (e.g. 26 2x32d "Shake-Shake-Image" ResNet) on 2 GPUs:
+```
+CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 2 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
+```
+To get comparable results using 1 GPU, you should change the batch size and the corresponding learning rate: 
 
 ```
-th main.lua -dataset cifar10 -nGPU 1 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 2 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
+CUDA_VISIBLE_DEVICES=0 th main.lua -dataset cifar10 -nGPU 1 -batchSize 64 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 2 -LR 0.1 -forwardShake true -backwardShake true -shakeImage true
 ``` 
 
-You can train a 26 2x96d "Shake-Shake-Image" ResNet on 2 GPUs using
+You can train a 26 2x96d "Shake-Shake-Image" ResNet on 2 GPUs using:
 
 ```
 CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 6 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
