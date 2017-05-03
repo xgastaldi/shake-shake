@@ -17,6 +17,16 @@ This method aims at helping computer vision practitioners faced with an overfit 
 
 Figure 1: **Left:** Forward training pass. **Center:** Backward training pass. **Right:** At test time.
 
+Bibtex:
+
+```
+@inproceedings{Gastaldi17ShakeShake,
+   title = {Shake-Shake regularization of 3-branch residual networks},
+   author  = {Xavier Gastaldi},
+   year  = 2017,
+   booktitle = {ICLR 2017 Workshop}}
+```
+
 ## Results
 The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the 96d models which were run 5 times.
 
