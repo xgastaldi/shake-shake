@@ -22,9 +22,10 @@ Bibtex:
 ```
 @inproceedings{Gastaldi17ShakeShake,
    title = {Shake-Shake regularization of 3-branch residual networks},
-   author  = {Xavier Gastaldi},
-   year  = 2017,
-   booktitle = {ICLR 2017 Workshop}}
+   author = {Xavier Gastaldi},
+   year = 2017,
+   booktitle = {ICLR 2017 Workshop}
+}
 ```
 
 ## Results
