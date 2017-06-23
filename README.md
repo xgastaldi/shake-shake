@@ -23,7 +23,7 @@ Bibtex:
 @article{Gastaldi17ShakeShake,
    title = {Shake-Shake regularization},
    author = {Xavier Gastaldi},
-   journal = {arXiv preprint arXiv:1705.07485v2},
+   journal = {arXiv preprint arXiv:1705.07485},
    year = 2017,
 }
 ```
