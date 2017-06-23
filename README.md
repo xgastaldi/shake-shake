@@ -1,4 +1,4 @@
-# Shake-Shake regularization of 3-branch residual networks
+# Shake-Shake regularization
 
 This repository contains the code for the papers [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl) and [Shake-Shake regularization](https://arxiv.org/abs/1705.07485). 
 
@@ -23,7 +23,7 @@ Bibtex:
 @article{Gastaldi17ShakeShake,
    title = {Shake-Shake regularization},
    author = {Xavier Gastaldi},
-  journal={arXiv preprint arXiv:1705.07485v2},
+   journal={arXiv preprint arXiv:1705.07485v2},
    year = 2017,
 }
 ```
@@ -69,7 +69,10 @@ CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -de
 ```
 
 4. To reproduce CIFAR-100 results (e.g. 29 2x4x64d "Shake-Even-Image" ResNeXt) on 2 GPUs:
+
+```
 CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar100 -depth 29 -baseWidth 64 -groups 4 -weightDecay 5e-4 -batchSize 32 -netType shakeshake -nGPU 2 -LR 0.025 -nThreads 8 -shareGradInput true -nEpochs 1800 -lrShape cosine -forwardShake true -backwardShake false -shakeImage true
+```
 
 ### Note
 Changes made to fb.resnet.torch files:
