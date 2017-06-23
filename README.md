@@ -1,6 +1,6 @@
 # Shake-Shake regularization
 
-This repository contains the code for the papers [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl) and [Shake-Shake regularization](https://arxiv.org/abs/1705.07485). 
+This repository contains the code for the paper [Shake-Shake regularization](https://arxiv.org/abs/1705.07485). This arxiv paper is an extension of [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl) which was accepted as a workshop contribution at ICLR 2017.
 
 The code is based on [fb.resnet.torch](https://github.com/facebook/fb.resnet.torch).
 
