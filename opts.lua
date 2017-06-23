@@ -45,6 +45,8 @@ function M.parse(arg)
    ---------- Model options ----------------------------------
    cmd:option('-netType',      'resnet', 'Options: resnet | preresnet')
    cmd:option('-depth',        34,       'ResNet depth: 18 | 34 | 50 | 101 | ...', 'number')
+   cmd:option('-baseWidth',  32,        'Number of filters of the first block')
+   cmd:option('-groups',        1,       'Number of grouped convolutions per residual branch', 'number')
    cmd:option('-shortcutType', '',       'Options: A | B | C')
    cmd:option('-retrain',      'none',   'Path to model to retrain with')
    cmd:option('-optimState',   'none',   'Path to an optimState to reload from')
@@ -54,8 +56,7 @@ function M.parse(arg)
    cmd:option('-resetClassifier', 'false', 'Reset the fully connected layer for fine-tuning')
    cmd:option('-nClasses',         0,      'Number of classes in the dataset')
    ------Shake-Shake------
-   cmd:option('-widenFactor',  1,        'Widening factor: 1 | 2 | 3 | 4 | ...', 'number')
-   cmd:option('-lrShape', 'multistep', 'learning rate annealing function, multistep or cosine')
+   cmd:option('-lrShape', 'cosine', 'learning rate annealing function, multistep or cosine')
    cmd:option('-nCycles', 1, 'number of learning rate annealing cycles')
    cmd:option('-forwardShake', 'true', 'Sample random numbers during the forward pass')
    cmd:option('-backwardShake', 'true', 'Sample random numbers during the backward pass')
@@ -88,11 +89,11 @@ function M.parse(arg)
       opt.nEpochs = opt.nEpochs == 0 and 90 or opt.nEpochs
    elseif opt.dataset == 'cifar10' then
       -- Default shortcutType=A and nEpochs=164
-      opt.shortcutType = opt.shortcutType == '' and 'A' or opt.shortcutType
+      opt.shortcutType = opt.shortcutType == '' and 'B' or opt.shortcutType
       opt.nEpochs = opt.nEpochs == 0 and 164 or opt.nEpochs
    elseif opt.dataset == 'cifar100' then
        -- Default shortcutType=A and nEpochs=164
-       opt.shortcutType = opt.shortcutType == '' and 'A' or opt.shortcutType
+       opt.shortcutType = opt.shortcutType == '' and 'B' or opt.shortcutType
        opt.nEpochs = opt.nEpochs == 0 and 164 or opt.nEpochs
    else
       cmd:error('unknown dataset: ' .. opt.dataset)

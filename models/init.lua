@@ -90,6 +90,7 @@ function M.setup(opt, checkpoint)
             ------Shake-Shake------
             local nn = require 'models/mulconstantslices'
             local nn = require 'models/shakeshakeblock'
+            local nn = require 'models/shakeshaketable'
             ------Shake-Shake------
             cudnn.fastest, cudnn.benchmark = fastest, benchmark
          end)

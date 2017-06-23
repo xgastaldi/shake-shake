@@ -1,6 +1,6 @@
 # Shake-Shake regularization of 3-branch residual networks
 
-This repository contains the code for the paper [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl). 
+This repository contains the code for the papers [Shake-Shake regularization of 3-branch residual networks](https://openreview.net/forum?id=HkO-PCmYl&noteId=HkO-PCmYl) and [Shake-Shake regularization](https://arxiv.org/abs/1705.07485). 
 
 The code is based on [fb.resnet.torch](https://github.com/facebook/fb.resnet.torch).
 
@@ -11,7 +11,7 @@ The code is based on [fb.resnet.torch](https://github.com/facebook/fb.resnet.tor
 4. [Contact](#contact)
 
 ## Introduction
-This method aims at helping computer vision practitioners faced with an overfit problem. The idea is to replace, in a 3-branch ResNet, the standard summation of residual branches by a stochastic affine combination. The largest tested model improves on the best single shot published result on CIFAR-10 by reaching 2.86% test error.
+The method introduced in this paper aims at helping deep learning practitioners faced with an overfit problem. The idea is to replace, in a multi-branch network, the standard summation of parallel branches with a stochastic affine combination. Applied to 3-branch residual networks, shake-shake regularization improves on the best single shot published results on CIFAR-10 and CIFAR-100 by reaching test errors of 2.86% and 15.85%.
 
 ![shake-shake](https://s3.eu-central-1.amazonaws.com/github-xg/architecture3.png)
 
@@ -20,11 +20,11 @@ Figure 1: **Left:** Forward training pass. **Center:** Backward training pass. *
 Bibtex:
 
 ```
-@inproceedings{Gastaldi17ShakeShake,
-   title = {Shake-Shake regularization of 3-branch residual networks},
+@article{Gastaldi17ShakeShake,
+   title = {Shake-Shake regularization},
    author = {Xavier Gastaldi},
+  journal={arXiv preprint arXiv:1705.07485v2},
    year = 2017,
-   booktitle = {ICLR 2017 Workshop}
 }
 ```
 
@@ -54,44 +54,45 @@ git clone https://github.com/xgastaldi/shake-shake.git
 2. Copy the elements in the shake-shake folder and paste them in the fb.resnet.torch folder. This will overwrite 5 files (*main.lua*, *train.lua*, *opts.lua*, *checkpoints.lua* and *models/init.lua*) and add 3 new files (*models/shakeshake.lua*, *models/shakeshakeblock.lua* and *models/mulconstantslices.lua*).
 3. To reproduce CIFAR-10 results (e.g. 26 2x32d "Shake-Shake-Image" ResNet) on 2 GPUs:
 ```
-CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 2 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
+CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -baseWidth 32 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
 ```
-To get comparable results using 1 GPU, you should change the batch size and the corresponding learning rate: 
+To get comparable results using 1 GPU, please change the batch size and the corresponding learning rate: 
 
 ```
-CUDA_VISIBLE_DEVICES=0 th main.lua -dataset cifar10 -nGPU 1 -batchSize 64 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 2 -LR 0.1 -forwardShake true -backwardShake true -shakeImage true
+CUDA_VISIBLE_DEVICES=0 th main.lua -dataset cifar10 -nGPU 1 -batchSize 64 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -baseWidth 32 -LR 0.1 -forwardShake true -backwardShake true -shakeImage true
 ``` 
 
-You can train a 26 2x96d "Shake-Shake-Image" ResNet on 2 GPUs using:
+A 26 2x96d "Shake-Shake-Image" ResNet can be trained on 2 GPUs using:
 
 ```
-CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -widenFactor 6 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
+CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -baseWidth 96 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
 ```
 
-A widenFactor of 2 corresponds to 32d, 4 to 64d, etc..
+4. To reproduce CIFAR-100 results (e.g. 29 2x4x64d "Shake-Even-Image" ResNeXt) on 2 GPUs:
+CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar100 -depth 29 -baseWidth 64 -groups 4 -weightDecay 5e-4 -batchSize 32 -netType shakeshake -nGPU 2 -LR 0.025 -nThreads 8 -shareGradInput true -nEpochs 1800 -lrShape cosine -forwardShake true -backwardShake false -shakeImage true
 
 ### Note
 Changes made to fb.resnet.torch files:
 
 *main.lua*  
-Ln 17, 54-59, 81-88: Adds a log (courtesy of Sergey Zagoruyko)  
+Ln 17, 54-59, 81-100: Adds a log 
 
 *train.lua*  
 Ln 36-38 58-60 206-213: Adds the cosine learning rate function  
 Ln 88-89: Adds the learning rate to the elements printed on screen  
 
 *opts.lua*  
-Ln 57-62: Adds Shake-Shake options  
+Ln 21-64: Adds Shake-Shake options  
 
 *checkpoints.lua*  
-Ln 15-16: Adds require 'models/shakeshakeblock' and require 'std'  
+Ln 15-16: Adds require 'models/shakeshakeblock', 'models/shakeshaketable' and require 'std'  
 Ln 60-61: Avoids using the fb.renet.torch deepcopy (it doesn't seem to be compatible with the BN in shakeshakeblock) and replaces it with the deepcopy from stdlib  
-Ln 67-81: Saves only the best model  
+Ln 67-86: Saves only the last model  
 
-*init.lua*  
-Ln 91-92: Adds require 'models/mulconstantslices' and require 'models/shakeshakeblock'  
+*models/init.lua*  
+Ln 91-92: Adds require 'models/mulconstantslices', require 'models/shakeshakeblock' and require 'models/shakeshaketable'
 
-The main model is in *shakeshake.lua*. The residual block model is in *shakeshakeblock.lua*. *mulconstantslices.lua* is just an extension of nn.mulconstant that multiplies elements of a vector with image slices of a mini-batch tensor.
+The main model is in *shakeshake.lua*. The residual block model is in *shakeshakeblock.lua*. *mulconstantslices.lua* is just an extension of nn.mulconstant that multiplies elements of a vector with image slices of a mini-batch tensor. *shakeshaketable.lua* contains the method used for CIFAR-100 since the ResNeXt code uses a table implementation instead of a module version.
 
 ## Contact
 xgastaldi.mba2011 at london.edu  

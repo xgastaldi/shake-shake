@@ -69,13 +69,13 @@ for epoch = startEpoch, opt.nEpochs do
    -- Run model on validation set
    local testTop1, testTop5 = trainer:test(epoch, valLoader)
 
-   local bestModel = false
-   if testTop1 < bestTop1 then
-      bestModel = true
-      bestTop1 = testTop1
-      bestTop5 = testTop5
-      print(' * Best model ', testTop1, testTop5)
-   end
+   --local bestModel = false
+   --if testTop1 < bestTop1 then
+   --   bestModel = true
+   --   bestTop1 = testTop1
+   --   bestTop5 = testTop5
+   --   print(' * Best model ', testTop1, testTop5)
+   --end
 
    ------Shake-Shake------
    log{
@@ -88,8 +88,10 @@ for epoch = startEpoch, opt.nEpochs do
    }
    ------Shake-Shake------
 
-   checkpoints.save(epoch, model, trainer.optimState, bestModel, opt)
+   --checkpoints.save(epoch, model, trainer.optimState, bestModel, opt)
 end
+
+checkpoints.save(opt.nEpochs, model, trainer.optimState, true, opt)
 
 ------Shake-Shake------
 -- The error rate for CIFAR-10 should be the error rate obtained at the end of the last epoch, not the best error rate

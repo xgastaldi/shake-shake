@@ -22,13 +22,73 @@ local function createModel(opt)
    local depth = opt.depth
    local shortcutType = opt.shortcutType or 'B'
    local iChannels
-   local k = opt.widenFactor
+   local k = opt.baseWidth
    local forwardShake = opt.forwardShake
    local backwardShake = opt.backwardShake
    local shakeImage = opt.shakeImage
    local batchSize = opt.batchSize
 
-   local function layer(block, nInputPlane, nOutputPlane, count, stride, forwardShake, backwardShake, shakeImage, batchSize)
+   -- The shortcut layer is either identity or 1x1 convolution
+   local function shortcut(nInputPlane, nOutputPlane, stride)
+      local useConv = shortcutType == 'C' or
+         (shortcutType == 'B' and nInputPlane ~= nOutputPlane)
+      if useConv then
+         -- 1x1 convolution
+         return nn.Sequential()
+            :add(Convolution(nInputPlane, nOutputPlane, 1, 1, stride, stride))
+            :add(SBatchNorm(nOutputPlane))
+      elseif nInputPlane ~= nOutputPlane then
+         -- Strided, zero-padded identity shortcut
+         return nn.Sequential()
+            :add(nn.SpatialAveragePooling(1, 1, stride, stride))
+            :add(nn.Concat(2)
+               :add(nn.Identity())
+               :add(nn.MulConstant(0)))
+      else
+         return nn.Identity()
+      end
+   end
+
+   -- The aggregated residual transformation bottleneck layer, Form (C)
+   local function resnext_bottleneck_C(n, stride, forwardShake, backwardShake, shakeImage, batchSize)
+      local nInputPlane = iChannels
+      iChannels = n * 4
+
+      local D = math.floor(n * (opt.baseWidth/64))
+      local C = opt.groups
+
+      local s1 = nn.Sequential()
+      s1:add(Convolution(nInputPlane,D*C,1,1,1,1,0,0))
+      s1:add(SBatchNorm(D*C))
+      s1:add(ReLU(true))
+      s1:add(Convolution(D*C,D*C,3,3,stride,stride,1,1,C))
+      s1:add(SBatchNorm(D*C))
+      s1:add(ReLU(true))
+      s1:add(Convolution(D*C,n*4,1,1,1,1,0,0))
+      s1:add(SBatchNorm(n*4))
+
+      local s2 = nn.Sequential()
+      s2:add(Convolution(nInputPlane,D*C,1,1,1,1,0,0))
+      s2:add(SBatchNorm(D*C))
+      s2:add(ReLU(true))
+      s2:add(Convolution(D*C,D*C,3,3,stride,stride,1,1,C))
+      s2:add(SBatchNorm(D*C))
+      s2:add(ReLU(true))
+      s2:add(Convolution(D*C,n*4,1,1,1,1,0,0))
+      s2:add(SBatchNorm(n*4))
+
+      return nn.Sequential()
+        :add(nn.ConcatTable()
+            :add(shortcut(nInputPlane, n * 4, stride))
+            :add(s1)
+            :add(s2))
+         :add(nn.ShakeShakeTable(0.5, forwardShake, backwardShake, shakeImage, batchSize))
+         :add(nn.CAddTable(false))
+         :add(ReLU(true))
+   end
+
+
+   local function layerC10(block, nInputPlane, nOutputPlane, count, stride, forwardShake, backwardShake, shakeImage, batchSize)
       local s = nn.Sequential()
 
       if count < 1 then
@@ -41,6 +101,15 @@ local function createModel(opt)
         s:add(block(nOutputPlane, nOutputPlane, 1, forwardShake, backwardShake, shakeImage, batchSize))
       end
 
+      return s
+   end
+
+   -- Creates count residual blocks with specified number of features
+   local function layerC100(block, features, count, stride, forwardShake, backwardShake, shakeImage, batchSize)
+      local s = nn.Sequential()
+      for i=1,count do
+         s:add(block(features, i == 1 and stride or 1, forwardShake, backwardShake, shakeImage, batchSize))
+      end
       return s
    end
 
@@ -67,16 +136,30 @@ local function createModel(opt)
       -- The ResNet CIFAR-10 model
       model:add(Convolution(3,16,3,3,1,1,1,1))
       model:add(ShareGradInput(SBatchNorm(16), 'first'))
-      model:add(layer(nn.ShakeShakeBlock, 16, 16*k, n, 1, forwardShake, backwardShake, shakeImage, batchSize))
-      model:add(layer(nn.ShakeShakeBlock, 16*k, 32*k, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
-      model:add(layer(nn.ShakeShakeBlock, 32*k, 64*k, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(layerC10(nn.ShakeShakeBlock, 16, k, n, 1, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(layerC10(nn.ShakeShakeBlock, k, 2*k, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(layerC10(nn.ShakeShakeBlock, 2*k, 4*k, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
       model:add(ReLU(true))
       model:add(Avg(8, 8, 1, 1))
-      model:add(nn.View(64*k):setNumInputDims(3))
-      model:add(nn.Linear(64*k, 10))
+      model:add(nn.View(4*k):setNumInputDims(3))
+      model:add(nn.Linear(4*k, 10))
 
    elseif opt.dataset == 'cifar100' then
-      error('Cifar100 is not yet implemented with Shake-Shake')
+      bottleneck = resnext_bottleneck_C
+      assert((depth - 2) % 9 == 0, 'depth should be one of 29, 38, 47, 56, 101')
+      local n = (depth - 2) / 9
+      iChannels = k
+      print(' | ResNet-' .. depth .. ' ' .. opt.dataset)
+
+      model:add(Convolution(3,64,3,3,1,1,1,1))
+      model:add(SBatchNorm(64))
+      model:add(ReLU(true))
+      model:add(layerC100(bottleneck, 64, n, 1, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(layerC100(bottleneck, 128, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(layerC100(bottleneck, 256, n, 2, forwardShake, backwardShake, shakeImage, batchSize))
+      model:add(Avg(8, 8, 1, 1))
+      model:add(nn.View(1024):setNumInputDims(3))
+      model:add(nn.Linear(1024, 100))
    else
       error('invalid dataset: ' .. opt.dataset)
    end

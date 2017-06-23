@@ -13,6 +13,7 @@ local checkpoint = {}
 
 ------Shake-Shake------
 require 'models/shakeshakeblock'
+require 'models/shakeshaketable'
 local std = require 'std'
 ------Shake-Shake------
 
@@ -49,7 +50,7 @@ function checkpoint.latest(opt)
    return latest, optimState
 end
 
-function checkpoint.save(epoch, model, optimState, isBestModel, opt)
+function checkpoint.save(epoch, model, optimState, isLastModel, opt)
    -- don't save the DataParallelTable for easier loading on other machines
    if torch.type(model) == 'nn.DataParallelTable' then
       model = model:get(1)
@@ -74,11 +75,13 @@ function checkpoint.save(epoch, model, optimState, isBestModel, opt)
    --})
    ------Shake-Shake------
 
-   if isBestModel then
-      torch.save(paths.concat(opt.save, 'model_best.t7'), model)
+   if isLastModel then
+      --torch.save(paths.concat(opt.save, 'model_last.t7'), model)
       ------Shake-Shake------
-      torch.save(paths.concat(opt.save, 'optimState_best.t7'), optimState)
+      --torch.save(paths.concat(opt.save, 'optimState_last.t7'), optimState)
       ------Shake-Shake------
+      torch.save(paths.concat(opt.save, modelFile), model)
+      torch.save(paths.concat(opt.save, optimFile), optimState)
    end
 end
 

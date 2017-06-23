@@ -113,6 +113,7 @@ function ShakeShakeBlock:updateOutput(input)
        self.alpha = torch.rand(1)[1] -- then create a random number
        -- Access the constant in self.net1 nn.MulConstant and overwrite it with self.alpha
        self.net1.modules[7].constant_scalar = self.alpha
+       --print('batch forward')
        -- Access the constant in self.net2 nn.MulConstant and overwrite it with 1 - self.alpha
        self.net2.modules[7].constant_scalar = 1 - self.alpha
      else -- If we are testing or do not want to randomize the forward pass
@@ -152,6 +153,7 @@ function ShakeShakeBlock:updateGradInput(input, gradOutput)
      if self.backwardShake == 'true' then -- If we want to randomize the backward pass
        self.beta = torch.rand(1)[1] -- then create a random number
        -- Access the constant in self.net1 nn.MulConstant and overwrite it with self.beta
+       --print('batch backward')
        self.net1.modules[7].constant_scalar = self.beta
        -- Access the constant in self.net2 nn.MulConstant and overwrite it with 1 - self.beta
        self.net2.modules[7].constant_scalar = 1 - self.beta
