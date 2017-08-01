@@ -51,7 +51,7 @@ Table 1: Error rates (%) on CIFAR-10 (Top 1 of the last epoch)
 ```
 git clone https://github.com/xgastaldi/shake-shake.git
 ```
-2. Copy the elements in the shake-shake folder and paste them in the fb.resnet.torch folder. This will overwrite 5 files (*main.lua*, *train.lua*, *opts.lua*, *checkpoints.lua* and *models/init.lua*) and add 3 new files (*models/shakeshake.lua*, *models/shakeshakeblock.lua* and *models/mulconstantslices.lua*).
+2. Copy the elements in the shake-shake folder and paste them in the fb.resnet.torch folder. This will overwrite 5 files (*main.lua*, *train.lua*, *opts.lua*, *checkpoints.lua* and *models/init.lua*) and add 4 new files (*models/shakeshake.lua*, *models/shakeshakeblock.lua*, *models/mulconstantslices.lua* and *models/shakeshaketable.lua*).
 3. To reproduce CIFAR-10 results (e.g. 26 2x32d "Shake-Shake-Image" ResNet) on 2 GPUs:
 ```
 CUDA_VISIBLE_DEVICES=0,1 th main.lua -dataset cifar10 -nGPU 2 -batchSize 128 -depth 26 -shareGradInput false -optnet true -nEpochs 1800 -netType shakeshake -lrShape cosine -baseWidth 32 -LR 0.2 -forwardShake true -backwardShake true -shakeImage true
@@ -89,7 +89,7 @@ Ln 21-64: Adds Shake-Shake options
 
 *checkpoints.lua*  
 Ln 15-16: Adds require 'models/shakeshakeblock', 'models/shakeshaketable' and require 'std'  
-Ln 60-61: Avoids using the fb.renet.torch deepcopy (it doesn't seem to be compatible with the BN in shakeshakeblock) and replaces it with the deepcopy from stdlib  
+Ln 60-61: Avoids using the fb.resnet.torch deepcopy (it doesn't seem to be compatible with the BN in shakeshakeblock) and replaces it with the deepcopy from stdlib  
 Ln 67-86: Saves only the last model  
 
 *models/init.lua*  
