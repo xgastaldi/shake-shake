@@ -111,7 +111,7 @@ Ln 91-92: Adds require 'models/mulconstantslices', require 'models/shakeshakeblo
 
 The main model is in *shakeshake.lua*. The residual block model is in *shakeshakeblock.lua*. *mulconstantslices.lua* is just an extension of nn.mulconstant that multiplies elements of a vector with image slices of a mini-batch tensor. *shakeshaketable.lua* contains the method used for CIFAR-100 since the ResNeXt code uses a table implementation instead of a module version.
 
-### Reimplementations
+## Reimplementations
 
 *Pytorch*  
 https://github.com/hysts/pytorch_shake_shake
