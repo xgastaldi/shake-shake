@@ -28,22 +28,36 @@ Bibtex:
 }
 ```
 
-## Results
+## Results on CIFAR-10
 The base network is a 26 2x32d ResNet (i.e. the network has a depth of 26, 2 residual branches and the first residual block has a width of 32). "Shake" means that all scaling coefficients are overwritten with new random numbers before the pass. "Even" means that all scaling coefficients are set to 0.5 before the pass. "Keep" means that we keep, for the backward pass, the scaling coefficients used during the forward pass. "Batch" means that, for each residual block, we apply the same scaling coefficient for all the images in the mini-batch. "Image" means that, for each residual block, we apply a different scaling coefficient for each image in the mini-batch. The numbers in the Table below represent the average of 3 runs except for the 96d models which were run 5 times.
 
-Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x96d 
--------|:-------:|:--------:|:--------:|:--------:|:--------:|
-Even	|Even	|n\a	|4.27	|3.76	|3.58
+Forward | Backward | Level | 26 2x32d | 26 2x64d | 26 2x96d | 26 2x112d 
+-------|:-------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+Even	|Even	|n\a	|4.27	|3.76	|3.58	|-
 Even	|Shake	|Batch	|4.44	|-	|-
-Shake	|Keep	|Batch	|4.11	|-	|-
-Shake	|Even	|Batch	|3.47	|3.30	|-
-Shake	|Shake	|Batch	|3.67	|3.07	|-
-Even	|Shake	|Image	|4.11	|-	|-
-Shake	|Keep	|Image	|4.09	|-	|-
-Shake	|Even	|Image	|3.47	|3.20	|-
-Shake	|Shake	|Image 	|3.55	|2.98	|**2.86**
+Shake	|Keep	|Batch	|4.11	|-	|-	|-
+Shake	|Even	|Batch	|3.47	|3.30	|-	|-
+Shake	|Shake	|Batch	|3.67	|3.07	|-	|-
+Even	|Shake	|Image	|4.11	|-	|-	|-
+Shake	|Keep	|Image	|4.09	|-	|-	|-
+Shake	|Even	|Image	|3.47	|3.20	|-	|-
+Shake	|Shake	|Image 	|3.55	|2.98	|2.86	|**2.82<sup>1</sup>**
 
 Table 1: Error rates (%) on CIFAR-10 (Top 1 of the last epoch)
+
+## Other results
+
+*Cifar-100:*  
+29 2x4x64d: 15.85%  
+
+*Reduced CIFAR-10:*  
+26 2x96d: 17.05%<sup>1</sup>  
+
+*SVHN:*  
+26 2x96d: 1.4%<sup>1</sup>  
+
+*Reduced SVHN:*  
+26 2x96d: 12.32%<sup>1</sup>  
 
 ## Usage 
 0. Install [fb.resnet.torch](https://github.com/facebook/fb.resnet.torch), [optnet](https://github.com/fmassa/optimize-net) and [lua-stdlib](https://github.com/lua-stdlib/lua-stdlib).
@@ -97,7 +111,18 @@ Ln 91-92: Adds require 'models/mulconstantslices', require 'models/shakeshakeblo
 
 The main model is in *shakeshake.lua*. The residual block model is in *shakeshakeblock.lua*. *mulconstantslices.lua* is just an extension of nn.mulconstant that multiplies elements of a vector with image slices of a mini-batch tensor. *shakeshaketable.lua* contains the method used for CIFAR-100 since the ResNeXt code uses a table implementation instead of a module version.
 
+### Reimplementations
+
+*Pytorch*  
+https://github.com/hysts/pytorch_shake_shake
+
+*Tensorflow*  
+https://github.com/tensorflow/models/blob/master/research/autoaugment/  
+https://github.com/tensorflow/tensor2tensor
+
 ## Contact
 xgastaldi.mba2011 at london.edu  
 Any discussions, suggestions and questions are welcome!
 
+## References
+(1) Ekin D. Cubuk, Barret Zoph, Dandelion Mane, Vijay Vasudevan, and Quoc V. Le. AutoAugment: Learning Augmentation Policies from Data. In arXiv:1805.09501, May 2018.
